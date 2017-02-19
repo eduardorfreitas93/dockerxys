@@ -1,36 +1,55 @@
-front:
-  build: .
-  ports:
-    - "80:80"
-    - "443:443"
-  links:
-    - redis:redis
-    - elasticsearch:elasticsearch
-    - gearman:gearman
-  volumes:
-    - /var/www/html:/var/www/html
+version: '2'
+services:
+  web:
+    build: .
+    ports:
+      - "80:80"
+      - "443:443"
+    links:
+      - redis:redis
+      - elasticsearch:elasticsearch
+      - gearman:gearman
+    external_links:
+      - some-postgres:postgres
+    volumes:
+      - /var/www/html:/var/www/html
+    network_mode: bridge
 
-redis:
-  image: redis
-  ports:
-    - "6379:6379"
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    network_mode: bridge
 
-elasticsearch:
-  image: elasticsearch:1.7
-  ports:
-    - "9200:9200"
-    - "9300:9300"
+  elasticsearch:
+    image: elasticsearch:1.7
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    network_mode: bridge
 
-logstash:
-  image: logstash:1.5
-  command: logstash -f /etc/logstash/conf.d/logstash.conf
-  links:
-    - redis:redis
-    - elasticsearch:elasticsearch
-  volumes:
-    - ./conf/logstash.conf:/etc/logstash/conf.d/logstash.conf
+  logstash:
+    image: logstash:1.5
+    command: logstash -f /etc/logstash/conf.d/logstash.conf
+    links:
+      - redis:redis
+      - elasticsearch:elasticsearch
+    volumes:
+      - ./conf/logstash.conf:/etc/logstash/conf.d/logstash.conf
+    network_mode: bridge
 
-gearman:
+  gearman:
     image: kendu/gearman
     ports:
-        - '4730:4730'
+      - '4730:4730'
+    network_mode: bridge
+
+volumes:
+  redis-data:
+    driver: local
+  elasticsearch-data:
+    driver: local
