@@ -13,4 +13,4 @@
 * Melhorado o build do Dockerfile que cria o container do apache2 com php
 * Simplificado a instalação do drive do oracle
 
-> Foi retirado do repositório os arquivos de drive do oracle e o arquivo do freetds.conf
+> Foi retirado do repositório o arquivos do freetds.conf
