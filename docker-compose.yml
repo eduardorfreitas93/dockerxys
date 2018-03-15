@@ -27,55 +27,11 @@ services:
       - /var/www/html:/var/www/html
       - logs-php-fpm:/var/log/php-fpm
     links:
-      - redis:redis
-      - elasticsearch:elasticsearch
-      - gearman:gearman
       - postgres:postgres
     restart: always
     network_mode: bridge
 
-  # redis
-  redis:
-    image: redis
-    expose:
-      - "6379"
-    volumes:
-      - redis-data:/data
-    restart: always
-    network_mode: bridge
-
-  # elasticsearch
-  elasticsearch:
-    image: elasticsearch:1.7
-    expose:
-      - "9200"
-      - "9300"
-    volumes:
-      - elasticsearch-data:/usr/share/elasticsearch/data
-    restart: always
-    network_mode: bridge
-
-  # logstash
-  logstash:
-    image: logstash:1.5
-    command: logstash -f /etc/logstash/conf.d/logstash.conf
-    links:
-      - redis:redis
-      - elasticsearch:elasticsearch
-    volumes:
-      - ./conf/logstash.conf:/etc/logstash/conf.d/logstash.conf
-    restart: always
-    network_mode: bridge
-
-  # gearman
-  gearman:
-    image: kendu/gearman
-    expose:
-      - "4730"
-    restart: always
-    network_mode: bridge
-
-  # postgres
+# postgres
   postgres:
     image: postgres:9.5
     ports:
@@ -90,10 +46,6 @@ services:
 
 # Volumes
 volumes:
-  redis-data:
-    driver: local
-  elasticsearch-data:
-    driver: local
   logs-php-fpm:
     driver: local
   logs-web:
