@@ -1,0 +1,16 @@
+version: '2'  
+syncs:  
+  app-sync:
+    src: '/var/www/html'
+    sync_excludes: [
+      ".idea", 
+      ".vscode", 
+      ".git", 
+      "var/cache/*", 
+      "var/logs/*", 
+      "var/sessions/*", 
+      ".gitignore", 
+      ".DS_Store", 
+      "biud/biud-app", 
+      "bendix/bendix-frontend"
+      ]

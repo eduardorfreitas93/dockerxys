@@ -11,8 +11,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
 
 # Add PostgreSQL repository
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main" > /etc/apt/sources.list.d/pgdg.list
-RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | \
-      apt-key add -
+RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 
 # Install PHP extensions deps
 RUN apt-get update \
@@ -31,7 +30,16 @@ RUN apt-get update \
         libmemcached-dev \
         freetds-dev \
 	libssl-dev \
-	openssl
+	openssl \
+        libgearman-dev
+
+RUN cd /tmp && \
+    git clone https://github.com/wcgallego/pecl-gearman.git && \
+    cd pecl-gearman && \
+    phpize && \
+    ./configure && \
+    make && make install && \
+    rm -rf /tmp/pecl-gearman
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- \
@@ -61,12 +69,14 @@ RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-di
             zip \
             pcntl \
             ftp \
+            exif \
     && docker-php-ext-enable \
             sqlsrv \
             pdo_sqlsrv \
             redis \
             memcached \
-            opcache
+            opcache \
+            gearman.so
 
 # Install APCu and APC backward compatibility
 RUN pecl install apcu \
