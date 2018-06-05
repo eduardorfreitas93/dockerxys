@@ -5,6 +5,7 @@
 * nginx
 * phpfpm:7.1
 * postgres:9.5
+* docker-sync
 
 ### Update
 
