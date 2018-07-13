@@ -12,7 +12,7 @@ services:
     volumes:
       - ./conf/vhost.conf:/etc/nginx/conf.d/default.conf
       - logs-web:/var/log/nginx
-      - app-sync:/var/www/html:cached
+      - app-sync:/var/www/html
     links:
       - php:php
     restart: always
@@ -24,7 +24,7 @@ services:
     expose:
       - "9000"
     volumes:
-      - app-sync:/var/www/html:cached
+      - app-sync:/var/www/html
       - logs-php-fpm:/var/log/php-fpm
     links:
       - postgres:postgres
@@ -44,6 +44,19 @@ services:
     restart: always
     network_mode: bridge
 
+# ELK
+  # elk:
+  #   image: willdurand/elk
+  #   ports:
+  #       - "81:80"
+  #   volumes:
+  #       - ./conf/elk/logstash:/etc/logstash
+  #       - ./conf/elk/logstash/patterns:/opt/logstash/patterns
+  #       - logs-php-fpm:/tmp/var/logs
+  #   network_mode: bridge
+  #   volumes_from:
+  #     - php
+
 #pgadmin4
   #pgadmin:
   #  image: fenglc/pgadmin4
@@ -58,12 +71,12 @@ services:
   #  network_mode: bridge
 
 # gearman
-  gearman:
-    image: kendu/gearman
-    ports:
-      - "4730:4730"
-    restart: always
-    network_mode: bridge
+  # gearman:
+  #   image: kendu/gearman
+  #   ports:
+  #     - "4730:4730"
+  #   restart: always
+  #   network_mode: bridge
 
 # Volumes
 volumes:
