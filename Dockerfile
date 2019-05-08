@@ -7,7 +7,9 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
         wget \
         vim \
         git \
-        unzip
+        unzip \
+        gnupg2 \
+        libpq-dev
 
 # Add PostgreSQL repository
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main" > /etc/apt/sources.list.d/pgdg.list
@@ -20,7 +22,7 @@ RUN apt-get update \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
         libmcrypt-dev \
-        libpng12-dev \
+        libpng-dev \
         zlib1g-dev \
         libicu-dev \
         g++ \
@@ -70,6 +72,7 @@ RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-di
             pcntl \
             ftp \
             exif \
+            bcmath \
     && docker-php-ext-enable \
             sqlsrv \
             pdo_sqlsrv \
@@ -85,7 +88,9 @@ RUN pecl install apcu \
     && docker-php-ext-enable apc --ini-name 20-docker-php-ext-apc.ini
 
 # Clean repository
-RUN apt-get clean \
+RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini \
+    && printf '\n\ndate.timezone = "America/Sao_Paulo"' >> /usr/local/etc/php/php.ini \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Volume e área de trabalho

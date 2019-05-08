@@ -28,6 +28,7 @@ services:
       - logs-php-fpm:/var/log/php-fpm
     links:
       - postgres:postgres
+      - gearman:gearman
     restart: always
     network_mode: bridge
 
@@ -41,6 +42,24 @@ services:
       POSTGRES_USER: admin
     volumes:
       - pg-data:/var/lib/postgresql/data
+    restart: always
+    network_mode: bridge
+
+# gearman
+  gearman:
+    image: kendu/gearman
+    ports:
+      - "4730:4730"
+    restart: always
+    network_mode: bridge
+
+# supervisord
+  supervisord:
+    image: eduardorfreitas93/alpine-supervisord-docker
+    volumes:
+      - ./conf/supervisord/conf:/etc/supervisor/conf.d
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./conf/supervisord/logs:/var/log
     restart: always
     network_mode: bridge
 

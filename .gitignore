@@ -2,3 +2,4 @@ conf/freetds.conf
 conf/instantclient_12_1
 .docker-sync/
 .DS_Store
+conf/supervisord/logs/*
